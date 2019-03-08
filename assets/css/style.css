@@ -1,0 +1,48 @@
+body {
+    padding: 20px;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.jumbotron {
+    background: #323270;
+}
+
+h2,
+h4 {
+    color: white;
+    text-align: center;
+    font-weight: bold;
+}
+
+form {
+    border-style: solid;
+    border-color: #F5F4F4;
+}
+
+.form-group {
+    padding: 20px;
+}
+
+input {
+    float: left;
+    padding: 20px;
+    width: 20px;
+}
+
+#search {
+    float: right;
+    background-color: white;
+    color: black;
+    border: none;
+    padding: 20px;
+}
+
+footer {
+    text-align: center;
+}
+
+label {}
+
+.card {
+    margin-top: 20px;
+}
