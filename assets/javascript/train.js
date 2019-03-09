@@ -13,10 +13,7 @@ firebase.initializeApp(config);
 
 // Create a variable to reference the database.
 var database = firebase.database();
-var train = "";
-var destination = "";
-var time = " ";
-var frequency = 0;
+
 
 
 //need to create a function that will get the information that the user will input 
@@ -25,17 +22,17 @@ var frequency = 0;
 $("#submit-trainInfo-btn").on("click", function(event) {
     event.preventDefault();
 
-    train = $("#train-input").val().trim();
-    destination = $("#destination-input").val().trim();
-    time = $("#time-input").val().trim();
-    frequency = $("#frequency-input").val().trim();
+    var train = $("#train-input").val().trim();
+    var destination = $("#destination-input").val().trim();
+    var time = $("#time-input").val().trim();
+    var frequency = $("#frequency-input").val().trim();
 
     database.ref().push({
         train: train,
         destination: destination,
         time: time,
         frequency: frequency,
-        dateAdded: firebase.database.ServerValue.TIMESTAMP
+
     });
 });
 
