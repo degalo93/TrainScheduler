@@ -14,30 +14,35 @@ firebase.initializeApp(config);
 // Create a variable to reference the database.
 var database = firebase.database();
 
-
+var train;
+var destination;
+var time;
+var frequency = 0;
 
 //need to create a function that will get the information that the user will input 
 
 
-$("#submit-trainInfo-btn").on("click", function(event) {
+$("#submit-btn").on("click", function(event) {
     event.preventDefault();
 
-    var train = $("#train-input").val().trim();
-    var destination = $("#destination-input").val().trim();
-    var time = $("#time-input").val().trim();
-    var frequency = $("#frequency-input").val().trim();
+    train = $("#train-input").val().trim();
+    destination = $("#destination-input").val().trim();
+    time = $("#time-input").val().trim();
+    frequency = $("#frequency-input").val().trim();
 
     database.ref().push({
         train: train,
         destination: destination,
         time: time,
         frequency: frequency,
+        dateAdded: firebase.database.ServerValue.TIMESTAMP
 
     });
+    $("form")[0].reset();
 });
 
 database.ref().on("child_added", function(childSnapshot) {
-    //var nextArr;
+    var nextArr;
     var minAway;
     // Chang year so first train comes before now
     var firstTrainNew = moment(childSnapshot.val().firstTrain, "hh:mm")
