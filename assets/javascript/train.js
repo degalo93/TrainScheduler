@@ -1,10 +1,11 @@
+// adding the firebase database
 var config = {
-    apiKey: "AIzaSyD6cBDOP7vcEmv4ghqvhfs6kZXM4RdrV0c",
-    authDomain: "swee-a280d.firebaseapp.com",
-    databaseURL: "https://swee-a280d.firebaseio.com",
-    projectId: "swee-a280d",
-    storageBucket: "swee-a280d.appspot.com",
-    messagingSenderId: "93151460604"
+    apiKey: "AIzaSyBZBVQ9O7sDnjt__wruHbpcDPpfvVjTxCk",
+    authDomain: "train-scheduler-bbc2f.firebaseapp.com",
+    databaseURL: "https://train-scheduler-bbc2f.firebaseio.com",
+    projectId: "train-scheduler-bbc2f",
+    storageBucket: "train-scheduler-bbc2f.appspot.com",
+    messagingSenderId: "810546569581"
 };
 firebase.initializeApp(config);
 
@@ -12,15 +13,65 @@ firebase.initializeApp(config);
 
 // Create a variable to reference the database.
 var database = firebase.database();
-var employeeName = "";
-var role = "";
-var startDate = 0;
-var monthlyRate = 0;
+var train = "";
+var destination = "";
+var time = " ";
+var frequency = 0;
 
-$("#add-employee-btn").on("click", function(event) {
+
+//need to create a function that will get the information that the user will input 
+
+
+$("#submit-trainInfo-btn").on("click", function(event) {
     event.preventDefault();
 
+    train = $("#train-input").val().trim();
+    destination = $("#destination-input").val().trim();
+    time = $("#time-input").val().trim();
+    frequency = $("#frequency-input").val().trim();
 
+    database.ref().push({
+        train: train,
+        destination: destination,
+        time: time,
+        frequency: frequency,
+        dateAdded: firebase.database.ServerValue.TIMESTAMP
+    });
+});
+
+database.ref().on("child_added", function(childSnapshot) {
+    //var nextArr;
+    var minAway;
+    // Chang year so first train comes before now
+    var firstTrainNew = moment(childSnapshot.val().firstTrain, "hh:mm")
+
+    // Difference between the current and firstTrain
+    var diffTime = moment().diff(moment(firstTrainNew), "minutes");
+    var remainder = diffTime % childSnapshot.val().frequency;
+    // Minutes until next train
+    var minAway = childSnapshot.val().frequency - remainder;
+    // Next train time
+    var nextTrain = moment().add(minAway, "minutes");
+    nextTrain = moment(nextTrain).format("hh:mm");
+
+    $("#add-row").append("<tr><td>" + childSnapshot.val().train +
+        "</td><td>" + childSnapshot.val().destination +
+        "</td><td>" + childSnapshot.val().frequency +
+        "</td><td>" + time +
+        "</td><td>" + minAway + "</td></tr>");
+
+    // Handle the errors
+}, function(errorObject) {
+    console.log("Errors handled: " + errorObject.code);
+});
+database.ref().orderByChild("dateAdded").limitToLast(1).on("child_added", function(snapshot) {
+    // Change the HTML to reflect
+    $("#train-display").html(snapshot.val().train);
+    $("#destination-display").html(snapshot.val().destination);
+    $("#time-display").html(snapshot.val().time);
+    $("#frequency-display").html(snapshot.val().frequency);
+});
+/*
     employeeName = $("#employee-name-input").val().trim();
     role = $("#role-input").val().trim();
     startDate = $("#start-input").val().trim();
@@ -50,16 +101,4 @@ dataRef.ref().on("child_added", function(childSnapshot) {
         " </span><span class='member-role'> " + childSnapshot.val().role +
         " </span><span class='member-startDate'> " + childSnapshot.val().startDate +
         " </span><span class='member-monthlyRate'> " + childSnapshot.val().monthlyRate +
-        " </span></div>");
-
-}, function(errorObject) {
-    console.log("Errors handled: " + errorObject.code);
-});
-
-dataRef.ref().orderByChild("dateAdded").limitToLast(1).on("child_added", function(snapshot) {
-    // Change the HTML to reflect
-    $("#employee-name-input").text(snapshot.val().employeeName);
-    $("#role-input").text(snapshot.val().role);
-    $("#start-input").text(snapshot.val().startDate);
-    $("#rate-input").text(snapshot.val().monthlyRate);
-});
+        " </span></div>");*/
